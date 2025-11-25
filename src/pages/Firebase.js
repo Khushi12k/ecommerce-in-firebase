@@ -50,3 +50,16 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+// Token utility functions
+export const saveTokenToStorage = (token) => {
+  localStorage.setItem('firebaseToken', token);
+};
+
+export const getTokenFromStorage = () => {
+  return localStorage.getItem('firebaseToken');
+};
+
+export const clearTokenFromStorage = () => {
+  localStorage.removeItem('firebaseToken');
+};

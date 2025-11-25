@@ -100,6 +100,8 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../pages/Firebase.js";
+import instance from "../config/axiosConfig";
+import { useAuth } from "../contexts/AuthProvider";
 
 function Login() {
   const [data, setData] = useState({
@@ -110,6 +112,7 @@ function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isError, setIsError] = useState(null);
   const navigate = useNavigate();
+  const { checkAuthStatus } = useAuth();
 
   console.log(useLocation());
 
@@ -126,6 +129,24 @@ function Login() {
 
       // Firebase login
       await signInWithEmailAndPassword(auth, data.email, data.password);
+
+      // Save the Firebase ID token to localStorage for later use
+      try {
+        const idToken = await auth.currentUser.getIdToken();
+        localStorage.setItem('firebaseToken', idToken);
+
+        // Exchange Firebase ID token with backend to set an HttpOnly session cookie (if backend supports it)
+        await instance.post(
+          "/auth/firebaseLogin",
+          { idToken },
+          { withCredentials: true }
+        );
+        // Let AuthProvider re-check server session if needed
+        await checkAuthStatus();
+      } catch (err) {
+        // backend exchange may fail if the endpoint doesn't exist; still proceed with client-side auth
+        console.log("Backend token exchange failed:", err.response?.data || err.message);
+      }
 
       navigate("/"); // redirect on success
     } catch (error) {

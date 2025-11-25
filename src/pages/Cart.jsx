@@ -3,6 +3,8 @@ import { useCart } from "../contexts/CartProvider";
 import {useCurrency} from "../contexts/CurrencyProvider";
 
 
+
+
 const Cart = () => {
     const { cart, setCart } = useCart();
     const { currency, convert } = useCurrency();
@@ -138,15 +140,4 @@ const Cart = () => {
 
 export default Cart;
 
-// // function handleQuantityChange(action, index) {
-// //     setQuantity(prev => {
-// //         const updated = [...prev];
-// //         if (action === "increment") updated[index] = (updated[index] || 1) + 1;
-// //         if (action === "decrement") updated[index] = Math.max((updated[index] || 1) - 1, 1);
-// //         return updated;
-// //     });
-// // }
 
-// {/* <button onClick={() => handleQuantityChange("decrement", index)}>-</button>
-//                                         <span>{quantity[index] || 1}</span>
-//                                         <button onClick={() => handleQuantityChange("increment", index)}>+</button> */}
